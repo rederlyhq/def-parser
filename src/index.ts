@@ -1,6 +1,7 @@
 import fs = require('fs');
+import WebWorkDef from './WebWorkDef';
 
-const readFile  = (filePath:string) => {
+const readFile  = (filePath:string): Promise<string> => {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, (err,data) => {
             if(err) {
@@ -17,5 +18,5 @@ console.log(defFilePath);
 
 (async () => {
     const content = await readFile(defFilePath);
-    console.log(content);
+    console.log(new WebWorkDef(content));
 })();
