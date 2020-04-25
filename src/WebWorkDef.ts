@@ -1,17 +1,99 @@
-// const ASSIGNMENT_TYPE_REGEX = /^assignmentType\\s*/;
-const ASSIGNMENT_TYPE_REGEX = /^assignmentType\s*=\s*(.*)?\s*/;
+class WebWorkDefKeyValueMap {
+    public webWorkKey: string;
+    public resultKey: string;
+    constructor(webWorkKey: string, resultKey?: string) {
+        this.webWorkKey = webWorkKey;
+        this.resultKey = resultKey || webWorkKey;
+    }
+
+    get regex (): RegExp {
+        // if any of the keys included regex characters it would be a problem
+        // but they are predefined and they don't so we are ignorming
+        return new RegExp(`^${this.webWorkKey}\\s*=\\s*(.*)?\\s*`);
+    }
+}
+
+const webWorkDefKeyMaps: Array<WebWorkDefKeyValueMap> = [
+    new WebWorkDefKeyValueMap('assignmentType'),
+    new WebWorkDefKeyValueMap('openDate'),
+    new WebWorkDefKeyValueMap('reducedScoringDate'),
+    new WebWorkDefKeyValueMap('dueDate'),
+    new WebWorkDefKeyValueMap('answerDate'),
+    new WebWorkDefKeyValueMap('enableReducedScoring'),
+    new WebWorkDefKeyValueMap('paperHeaderFile'),
+    new WebWorkDefKeyValueMap('screenHeaderFile'),
+    new WebWorkDefKeyValueMap('description'),
+    new WebWorkDefKeyValueMap('restrictProbProgression'),
+    new WebWorkDefKeyValueMap('emailInstructor'),
+];
+
+const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
+    new WebWorkDefKeyValueMap('problem_id'),
+    new WebWorkDefKeyValueMap('source_file'),
+    new WebWorkDefKeyValueMap('value'),
+    new WebWorkDefKeyValueMap('max_attempts'),
+    new WebWorkDefKeyValueMap('showMeAnother'),
+    new WebWorkDefKeyValueMap('prPeriod'),
+    new WebWorkDefKeyValueMap('counts_parent_grade'),
+    new WebWorkDefKeyValueMap('att_to_open_children'),
+]
+
+export class Problem {
+    constructor() {
+
+    }
+}
+
 export default class WebWorkDef {
+    public problems: Array<Problem> = [];
     public assignmentType:string;
 
     constructor(content:string) {
         const lines = content.split('\n');
-        lines.forEach((line) => {
-            let match;
-            if(match = line.match(ASSIGNMENT_TYPE_REGEX)) {
-                this.assignmentType = match[1];
+        let currentProblem:Problem = null;
+        lineLoop: for(let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+            const line = lines[lineNumber].trim();
+
+            if(line.length === 0) {
+                continue lineLoop;
+            } else if (line === 'problem_start') {
+                if(currentProblem !== null) {
+                    throw new Error('Problem started in the middle of a problem');
+                } else {
+                    currentProblem = new Problem();
+                }
+            } else if (line === 'problem_end') {
+                if(currentProblem === null) {
+                    throw new Error('Problem ended when it wasn\'t currently in a problem');
+                } else {
+                    this.problems.push(currentProblem);
+                    currentProblem = null;
+                }
+            } else if (line === 'problemListV2') {
+                // Nothing to do
             } else {
-                console.error(`Failed to parse the following line: ${line}`);
+                if(currentProblem === null) {
+                    for(let keyIndex = 0; keyIndex < webWorkDefKeyMaps.length; keyIndex++) {
+                        const webWorkDefKeyMap = webWorkDefKeyMaps[keyIndex];
+                        let match;
+                        if(match = line.match(webWorkDefKeyMap.regex)) {
+                            this[webWorkDefKeyMap.resultKey] = match[1];
+                            continue lineLoop;
+                        }
+                    }
+                    console.error(`Global field not found for line: ${line}`);
+                } else {
+                    for(let keyIndex = 0; keyIndex < webWorkDefProblemKeyMaps.length; keyIndex++) {
+                        const webWorkDefKeyMap = webWorkDefProblemKeyMaps[keyIndex];
+                        let match;
+                        if(match = line.match(webWorkDefKeyMap.regex)) {
+                            currentProblem[webWorkDefKeyMap.resultKey] = match[1];
+                            continue lineLoop;
+                        }
+                    }
+                    console.error(`Problem field not found for line: ${line}`);
+                }
             }
-        });
+        }
     }
 }
