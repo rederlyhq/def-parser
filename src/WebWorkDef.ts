@@ -15,6 +15,8 @@ class WebWorkDefKeyValueMap {
 
 const webWorkDefKeyMaps: Array<WebWorkDefKeyValueMap> = [
     new WebWorkDefKeyValueMap('assignmentType'),
+
+    // assignmentType = default
     new WebWorkDefKeyValueMap('openDate'),
     new WebWorkDefKeyValueMap('reducedScoringDate'),
     new WebWorkDefKeyValueMap('dueDate'),
@@ -25,6 +27,18 @@ const webWorkDefKeyMaps: Array<WebWorkDefKeyValueMap> = [
     new WebWorkDefKeyValueMap('description'),
     new WebWorkDefKeyValueMap('restrictProbProgression'),
     new WebWorkDefKeyValueMap('emailInstructor'),
+
+    // assignmentType = gateway
+    new WebWorkDefKeyValueMap('attemptsPerVersion'),
+    new WebWorkDefKeyValueMap('timeInterval'),
+    new WebWorkDefKeyValueMap('versionsPerInterval'),
+    new WebWorkDefKeyValueMap('versionTimeLimit'),
+    new WebWorkDefKeyValueMap('problemRandOrder'),
+    new WebWorkDefKeyValueMap('problemsPerPage'),
+    new WebWorkDefKeyValueMap('hideScore'),
+    new WebWorkDefKeyValueMap('hideScoreByProblem'),
+    new WebWorkDefKeyValueMap('hideWork'),
+    new WebWorkDefKeyValueMap('capTimeLimit'),
 ];
 
 const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
