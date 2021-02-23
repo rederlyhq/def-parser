@@ -4,6 +4,7 @@
         "target": "ES6",
         "outDir": "lib",
         "rootDir": "src",
+        "strict": true,
 
         // "noImplicitAny": true,
         "removeComments": true,
