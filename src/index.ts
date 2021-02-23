@@ -1,3 +1,1 @@
-import WebWorkDef, { Problem as ProblemInput } from './WebWorkDef';
-export default WebWorkDef;
-export const Problem = ProblemInput;
+module.exports = require('./WebWorkDef');
