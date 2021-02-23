@@ -1,7 +1,6 @@
 // import logger from './logger';
 // Maybe we should keep a global logger to override this
 const logger = console;
-global.logger = logger;
 
 class WebWorkDefKeyValueMap {
     public webWorkKey: string;
