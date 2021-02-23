@@ -1,6 +1,6 @@
 {
   "name": "@rederly/webwork-def-parser",
-  "version": "0.0.11",
+  "version": "1.0.0",
   "description": "A utility for parsing def file from WeBWorK",
   "main": "lib/index.js",
   "scripts": {
