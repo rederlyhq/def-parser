@@ -2,12 +2,15 @@
     "compilerOptions": {
         "module": "commonjs",
         "target": "ES6",
-        "outDir": "ts-built",
+        "outDir": "lib",
         "rootDir": "src",
 
         // "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
+
+        "declaration": true,
+        "declarationMap": true,
         "sourceMap": true
     },
 }
