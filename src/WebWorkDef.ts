@@ -1,3 +1,8 @@
+// import logger from './logger';
+// Maybe we should keep a global logger to override this
+const logger = console;
+global.logger = logger;
+
 class WebWorkDefKeyValueMap {
     public webWorkKey: string;
     public resultKey: string;
@@ -6,7 +11,7 @@ class WebWorkDefKeyValueMap {
         this.resultKey = resultKey || webWorkKey;
     }
 
-    get regex (): RegExp {
+    get regex(): RegExp {
         // if any of the keys included regex characters it would be a problem
         // but they are predefined and they don't so we are ignorming
         return new RegExp(`^${this.webWorkKey}\\s*=\\s*(.*)?\\s*`);
@@ -50,34 +55,80 @@ const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
     new WebWorkDefKeyValueMap('prPeriod'),
     new WebWorkDefKeyValueMap('counts_parent_grade'),
     new WebWorkDefKeyValueMap('att_to_open_children'),
-]
+    new WebWorkDefKeyValueMap('rederlyAdditionalPaths'),
+    new WebWorkDefKeyValueMap('rederlyRandomSeedRestrictions'),
+];
 
 export class Problem {
-    constructor() {
-
-    }
+    public problem_id?: string;
+    public source_file?: string;
+    public value?: string;
+    public max_attempts?: string;
+    public showMeAnother?: string;
+    public prPeriod?: string;
+    public counts_parent_grade?: string;
+    public att_to_open_children?: string;
+    public rederlyAdditionalPaths? : string;
+    public rederlyRandomSeedRestrictions? : string;
 }
 
 export default class WebWorkDef {
     public problems: Array<Problem> = [];
-    public assignmentType:string;
+    public assignmentType?: string;
+    public openDate?: string;
+    public dueDate?: string;
+    public attemptsPerVersion?: string;
+    public timeInterval?: string;
+    public versionsPerInterval?: string;
+    public versionTimeLimit?: string;
+    public problemRandOrder?: string;
+    public problemsPerPage?: string;
+    public hideScore?: string;
+    public hideScoreByProblem?: string;
+    public hideWork?: string;
+    public capTimeLimit?: string;
+    private v1ListMode = false;
 
-    constructor(content:string) {
+    constructor(content: string) {
         const lines = content.split('\n');
-        let currentProblem:Problem = null;
-        lineLoop: for(let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
+        let currentProblem: Problem | null = null;
+        lineLoop: for (let lineNumber = 0; lineNumber < lines.length; lineNumber++) {
             const line = lines[lineNumber].trim();
-
-            if(line.length === 0) {
+            if (line.length === 0) {
                 continue lineLoop;
+            } else if (this.v1ListMode) {
+                const tokens = line.split(',');
+                if (tokens.length > 3) {
+                    logger.warn(`V1 Def file has more than 3 values: [${line}]`);
+                }
+                const problem = new Problem();
+                // Technically this field can't be nil since split on a string will at least return the string
+                // but going to add nil accessor anyway
+                // webwork field
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                problem.source_file = tokens[0]?.trim();
+                problem.value = tokens[1]?.trim();
+                // webwork field
+                // eslint-disable-next-line @typescript-eslint/camelcase
+                problem.max_attempts = tokens[2]?.trim();
+
+                if (problem.value !== undefined && isNaN(parseInt(problem.value, 10))) {
+                    throw new Error(`Error parsing v1 problem list, value ${problem.value} is not a number`);
+                }
+
+                if (problem.max_attempts !== undefined && isNaN(parseInt(problem.max_attempts, 10))) {
+                    throw new Error(`Error parsing v1 problem list, max_attempts ${problem.max_attempts} is not a number`);
+                }
+
+                this.problems.push(problem);
             } else if (line === 'problem_start') {
-                if(currentProblem !== null) {
+                if (currentProblem !== null) {
                     throw new Error('Problem started in the middle of a problem');
                 } else {
                     currentProblem = new Problem();
                 }
             } else if (line === 'problem_end') {
-                if(currentProblem === null) {
+                if (currentProblem === null) {
                     throw new Error('Problem ended when it wasn\'t currently in a problem');
                 } else {
                     this.problems.push(currentProblem);
@@ -85,29 +136,50 @@ export default class WebWorkDef {
                 }
             } else if (line === 'problemListV2') {
                 // Nothing to do
+            } else if (line.split('=')[0] !== undefined && line.split('=')[0] !== null && line.split('=')[0].trim() === 'problemList') {
+                this.v1ListMode = true;
             } else {
-                if(currentProblem === null) {
-                    for(let keyIndex = 0; keyIndex < webWorkDefKeyMaps.length; keyIndex++) {
+                if (line.startsWith('#')) {
+                    // This does not handle mid line comments
+                    logger.debug('Comment in def file');
+                } else if (currentProblem === null) {
+                    for (let keyIndex = 0; keyIndex < webWorkDefKeyMaps.length; keyIndex++) {
                         const webWorkDefKeyMap = webWorkDefKeyMaps[keyIndex];
                         let match;
-                        if(match = line.match(webWorkDefKeyMap.regex)) {
-                            this[webWorkDefKeyMap.resultKey] = match[1];
+                        if (match = line.match(webWorkDefKeyMap.regex)) {
+                            // TODO this was a hack to be able to use dynamic tags against "this"
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (this as any)[webWorkDefKeyMap.resultKey] = match[1];
                             continue lineLoop;
                         }
                     }
-                    console.error(`Global field not found for line: ${line}`);
+                    logger.warn(`Global field not found for line: ${line}`);
                 } else {
-                    for(let keyIndex = 0; keyIndex < webWorkDefProblemKeyMaps.length; keyIndex++) {
+                    for (let keyIndex = 0; keyIndex < webWorkDefProblemKeyMaps.length; keyIndex++) {
                         const webWorkDefKeyMap = webWorkDefProblemKeyMaps[keyIndex];
                         let match;
-                        if(match = line.match(webWorkDefKeyMap.regex)) {
-                            currentProblem[webWorkDefKeyMap.resultKey] = match[1];
+                        if (match = line.match(webWorkDefKeyMap.regex)) {
+                            // TODO this was a hack to be able to use dynamic tags against "this"
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                            (currentProblem as any)[webWorkDefKeyMap.resultKey] = match[1];
                             continue lineLoop;
                         }
                     }
-                    console.error(`Problem field not found for line: ${line}`);
+                    logger.error(`Problem field not found for line: ${line}`);
                 }
             }
         }
+    }
+
+    isExam(): boolean {
+        return ['gateway', 'proctored_gateway'].indexOf(this.assignmentType?.toLowerCase() ?? '') >= 0;
+    }
+
+    static characterBoolean = (value: string | undefined): boolean => {
+        return value === 'Y';
+    }
+
+    static numberBoolean = (value: string | undefined): boolean => {
+        return value !== undefined ? Boolean(parseInt(value, 0)) : false;
     }
 }
