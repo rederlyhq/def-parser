@@ -1,6 +1,3 @@
-import WebWorkDef, * as WebWorkDefSub  from './WebWorkDef';
+import WebWorkDef, { Problem as ProblemInput } from './WebWorkDef';
 export default WebWorkDef;
-export const webworkDefParserExports = {
-    WebWorkDef,
-    ...WebWorkDefSub
-}
+export const Problem = ProblemInput;
