@@ -1,6 +1,4 @@
-// import logger from './logger';
-// Maybe we should keep a global logger to override this
-const logger = console;
+import logger from './sharedLogger';
 
 class WebWorkDefKeyValueMap {
     public webWorkKey: string;
