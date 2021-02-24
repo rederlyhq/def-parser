@@ -1,0 +1,82 @@
+assignmentType = gateway
+# Dates don't have timezones due to limitations
+openDate = 05/28/2021 at 01:22pm
+dueDate = 05/28/2021 at 01:22pm
+reducedScoringDate = 05/28/2021 at 01:22pm
+answerDate = 05/28/2021 at 01:22pm
+enableReducedScoring = N
+# Not supported
+paperHeaderFile   = 
+# Not supported
+screenHeaderFile  = 
+attemptsPerVersion  = 8787
+timeInterval        = 180
+versionsPerInterval = 78
+versionTimeLimit    = 87
+problemRandOrder    = 0
+# Not supported
+problemsPerPage     = 0
+hideScore           = Y
+hideScoreByProblem  = Y
+hideWork            = N
+capTimeLimit        = 0
+# Not supported
+description       = 
+# Not supported
+restrictProbProgression = 0
+# Not supported
+emailInstructor   = 0
+
+
+
+problemListV2
+problem_start
+problem_id = 50756
+source_file = private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path5.pg
+value = 1
+max_attempts = -1
+# showMeAnother in webwork is number of attempts before but rederly does not support that
+showMeAnother = -1
+# Not supported
+prPeriod = -1
+# Not supported
+counts_parent_grade = 0
+# Not supported
+att_to_open_children = 0
+rederlyAdditionalPaths = ["private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path4.pg"]
+rederlyRandomSeedRestrictions = [3,2,1]
+problem_end
+
+problem_start
+problem_id = 50757
+source_file = private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path3.pg
+value = 1
+max_attempts = -1
+# showMeAnother in webwork is number of attempts before but rederly does not support that
+showMeAnother = -1
+# Not supported
+prPeriod = -1
+# Not supported
+counts_parent_grade = 0
+# Not supported
+att_to_open_children = 0
+rederlyAdditionalPaths = ["private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path2.pg","private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path1.pg"]
+rederlyRandomSeedRestrictions = [9,8,7]
+problem_end
+
+problem_start
+problem_id = 50758
+source_file = private/my/57fde7a4-0bc9-4f92-be1d-79d6dcb1a621/path6.pg
+value = 1
+max_attempts = -1
+# showMeAnother in webwork is number of attempts before but rederly does not support that
+showMeAnother = -1
+# Not supported
+prPeriod = -1
+# Not supported
+counts_parent_grade = 0
+# Not supported
+att_to_open_children = 0
+rederlyAdditionalPaths = []
+rederlyRandomSeedRestrictions = [6,5,4]
+problem_end

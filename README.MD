@@ -13,4 +13,5 @@ There is currently a CLI that is used for testing.  It's only parameter is the p
 npm start -- ./examples/set4.8_LHopitals_Rule.def
 npm start -- ./examples/setMidterm_Exam.def
 npm start -- ./examples/setQuadraticFormula.def
+npm start -- ./examples/Tom222.rdef
 ```
