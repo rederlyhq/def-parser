@@ -1,11 +1,24 @@
 import logger from './sharedLogger';
 
+
+interface WebWorkDefKeyValueMapOptions {
+    webWorkKey: string;
+    resultKey?: string;
+    comment?: string;
+}
+
 class WebWorkDefKeyValueMap {
     public webWorkKey: string;
     public resultKey: string;
-    constructor(webWorkKey: string, resultKey?: string) {
+    public comment: string;
+    constructor({
+        webWorkKey,
+        resultKey,
+        comment
+    }: WebWorkDefKeyValueMapOptions) {
         this.webWorkKey = webWorkKey;
-        this.resultKey = resultKey || webWorkKey;
+        this.resultKey = resultKey ?? webWorkKey;
+        this.comment = comment ?? '';
     }
 
     get regex(): RegExp {
@@ -16,44 +29,42 @@ class WebWorkDefKeyValueMap {
 }
 
 const webWorkDefKeyMaps: Array<WebWorkDefKeyValueMap> = [
-    new WebWorkDefKeyValueMap('assignmentType'),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'assignmentType' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'openDate', comment: 'Dates do not have timezones due to limitations'}),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'reducedScoringDate' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'dueDate' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'answerDate', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'enableReducedScoring' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'paperHeaderFile', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'screenHeaderFile', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'description', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'restrictProbProgression', comment: 'Not supported' }),
 
-    // assignmentType = default
-    new WebWorkDefKeyValueMap('openDate'),
-    new WebWorkDefKeyValueMap('reducedScoringDate'),
-    new WebWorkDefKeyValueMap('dueDate'),
-    new WebWorkDefKeyValueMap('answerDate'),
-    new WebWorkDefKeyValueMap('enableReducedScoring'),
-    new WebWorkDefKeyValueMap('paperHeaderFile'),
-    new WebWorkDefKeyValueMap('screenHeaderFile'),
-    new WebWorkDefKeyValueMap('description'),
-    new WebWorkDefKeyValueMap('restrictProbProgression'),
-    new WebWorkDefKeyValueMap('emailInstructor'),
-
-    // assignmentType = gateway
-    new WebWorkDefKeyValueMap('attemptsPerVersion'),
-    new WebWorkDefKeyValueMap('timeInterval'),
-    new WebWorkDefKeyValueMap('versionsPerInterval'),
-    new WebWorkDefKeyValueMap('versionTimeLimit'),
-    new WebWorkDefKeyValueMap('problemRandOrder'),
-    new WebWorkDefKeyValueMap('problemsPerPage'),
-    new WebWorkDefKeyValueMap('hideScore'),
-    new WebWorkDefKeyValueMap('hideScoreByProblem'),
-    new WebWorkDefKeyValueMap('hideWork'),
-    new WebWorkDefKeyValueMap('capTimeLimit'),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'emailInstructor', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'attemptsPerVersion' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'timeInterval' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'versionsPerInterval' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'versionTimeLimit' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'problemRandOrder' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'problemsPerPage', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'hideScore' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'hideScoreByProblem' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'hideWork' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'capTimeLimit' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyAvailableVersions', comment: 'WeBWorK does this based on dates, since that is not the case here including this value as well (with fallback with dates)' }),
 ];
 
 const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
-    new WebWorkDefKeyValueMap('problem_id'),
-    new WebWorkDefKeyValueMap('source_file'),
-    new WebWorkDefKeyValueMap('value'),
-    new WebWorkDefKeyValueMap('max_attempts'),
-    new WebWorkDefKeyValueMap('showMeAnother'),
-    new WebWorkDefKeyValueMap('prPeriod'),
-    new WebWorkDefKeyValueMap('counts_parent_grade'),
-    new WebWorkDefKeyValueMap('att_to_open_children'),
-    new WebWorkDefKeyValueMap('rederlyAdditionalPaths'),
-    new WebWorkDefKeyValueMap('rederlyRandomSeedRestrictions'),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'problem_id' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'source_file' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'value' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'max_attempts' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'showMeAnother', comment: 'showMeAnother in webwork is number of attempts before but rederly does not support that' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'prPeriod', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'counts_parent_grade', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'att_to_open_children', comment: 'Not supported' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyAdditionalPaths' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyRandomSeedRestrictions' }),
 ];
 
 export class Problem {
@@ -72,8 +83,7 @@ export class Problem {
 export default class WebWorkDef {
     public problems: Array<Problem> = [];
     public assignmentType?: string;
-    public openDate?: string;
-    public dueDate?: string;
+    public enableReducedScoring?: string;
     public attemptsPerVersion?: string;
     public timeInterval?: string;
     public versionsPerInterval?: string;
@@ -84,6 +94,22 @@ export default class WebWorkDef {
     public hideScoreByProblem?: string;
     public hideWork?: string;
     public capTimeLimit?: string;
+
+    // Not used
+    public openDate?: string;
+    public dueDate?: string;
+    public reducedScoringDate?: string;
+
+    // Not supported
+    public answerDate?: string;
+    public description?: string;
+    public restrictProbProgression?: string;
+    public emailInstructor?: string;
+    public paperHeaderFile?: string;
+    public screenHeaderFile?: string;
+
+    public rederlyAvailableVersions?: string;
+    
     private v1ListMode = false;
 
     constructor(content: string) {
