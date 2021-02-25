@@ -9,8 +9,16 @@
     "build:watch": "tsc --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rederlyhq/def-parser.git"
+  },
   "author": "Rederly",
   "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/rederlyhq/def-parser/issues"
+  },
+  "homepage": "https://github.com/rederlyhq/def-parser#readme",
   "devDependencies": {
     "@types/node": "^13.13.2",
     "ts-node": "^8.9.0",
