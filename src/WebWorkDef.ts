@@ -1,5 +1,7 @@
 import logger from './sharedLogger';
 
+// TODO move to @rederly/typescript-utils
+const isKeyOf = <T> (key: any, obj: T): key is keyof T => key in obj;
 
 interface WebWorkDefKeyValueMapOptions {
     webWorkKey: string;
@@ -204,5 +206,32 @@ export default class WebWorkDef {
 
     static numberBoolean = (value: string | undefined): boolean => {
         return value !== undefined ? Boolean(parseInt(value, 0)) : false;
+    }
+
+    dumpAsDefFileContent(): string {
+        let result = '';
+        webWorkDefKeyMaps.forEach((keyObj) => {
+            if (isKeyOf(keyObj.webWorkKey, this)) {
+                if (keyObj.comment) {
+                    result += `# ${keyObj.comment}\n`;
+                }
+                result += `${keyObj.webWorkKey} = ${this[keyObj.webWorkKey]}\n`;
+            }
+        });
+
+        result += '\n\nproblemListV2\n\n';
+        this.problems.forEach((problem) => {
+            result += 'problem_start\n'
+            webWorkDefProblemKeyMaps.forEach((keyObj) => {
+                if (isKeyOf(keyObj.webWorkKey, problem)) {
+                    if (keyObj.comment) {
+                        result += `# ${keyObj.comment}\n`
+                    }
+                    result += `${keyObj.webWorkKey} = ${problem[keyObj.webWorkKey]}\n`
+                }
+            });
+            result += 'problem_end\n\n'
+        });
+        return result;
     }
 }
