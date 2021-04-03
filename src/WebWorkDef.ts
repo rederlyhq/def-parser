@@ -54,6 +54,7 @@ const webWorkDefKeyMaps: Array<WebWorkDefKeyValueMap> = [
     new WebWorkDefKeyValueMap({ webWorkKey: 'hideWork' }),
     new WebWorkDefKeyValueMap({ webWorkKey: 'capTimeLimit' }),
     new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyAvailableVersions', comment: 'WeBWorK does this based on dates, since that is not the case here including this value as well (with fallback with dates)' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'rederlySetDescription', comment: 'WeBWorK has a description but ours is specifically a quill object so using a different key' }),
 ];
 
 const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
@@ -111,6 +112,8 @@ export default class WebWorkDef {
     public screenHeaderFile?: string;
 
     public rederlyAvailableVersions?: string;
+    // WeBWorK does have a description, however ours is specifically quill so keeping it seperate for now, can always change later
+    public rederlySetDescription?: string;
     
     private v1ListMode = false;
 
