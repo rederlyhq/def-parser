@@ -68,6 +68,7 @@ const webWorkDefProblemKeyMaps: Array<WebWorkDefKeyValueMap> = [
     new WebWorkDefKeyValueMap({ webWorkKey: 'att_to_open_children', comment: 'Not supported' }),
     new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyAdditionalPaths' }),
     new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyRandomSeedRestrictions' }),
+    new WebWorkDefKeyValueMap({ webWorkKey: 'rederlyOptional' }),
 ];
 
 export class Problem {
@@ -81,6 +82,7 @@ export class Problem {
     public att_to_open_children?: string;
     public rederlyAdditionalPaths? : string;
     public rederlyRandomSeedRestrictions? : string;
+    public rederlyOptional? : string;
 }
 
 export default class WebWorkDef {
